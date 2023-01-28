@@ -50,6 +50,10 @@ class prediction:
             .write.mode("overwrite")\
             .parquet(f"{self.output}/output_parquet_{type}")
 
+        path = self.output+"/output_easy_json_"+type+".json"
+        df.toPandas()\
+            .to_json(orient="records", path_or_buf=path)
+
     def formatter(self, df: pyspark.sql.dataframe.DataFrame) -> pyspark.sql.dataframe.DataFrame:
         return df.withColumn("r", explode("recommendations"))\
             .select("user_id", col("r.movie_id"), col("r.rating"))
